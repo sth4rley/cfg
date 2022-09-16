@@ -19,8 +19,8 @@ super + g
     google-chrome-stable
 
 #archlinux-logout
-#super + x
-#    archlinux-logout
+super + x
+    spotify --no-zygote
 
 #Rofi theme selector
 #super + r
