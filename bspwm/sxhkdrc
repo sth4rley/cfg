@@ -16,15 +16,15 @@ super + shift + d
 
 #Chrome
 super + g
-    google-chrome-stable
+    brave-browser
 
 #archlinux-logout
 super + x
     spotify --no-zygote
 
 #Rofi theme selector
-#super + r
-#    rofi-theme-selector
+super + r
+    rofi-theme-selector
 
 #Pavucontrol
 super + v
@@ -32,7 +32,7 @@ super + v
 
 #kitty
 super + Return
-    kitty
+  kitty 
 
 #Xkill
 super + Escape
@@ -124,11 +124,13 @@ XF86AudioStop
 
 #Brightness up
 XF86MonBrightnessUp
-    xbacklight -inc 10
+    light -A 5
+    #xbacklight -inc 10
 
 #Brightness down
 XF86MonBrightnessDown
-    xbacklight -dec 10
+    light -U 5
+    #xbacklight -dec 10
 
 #########################
 #        POLYBAR        #
