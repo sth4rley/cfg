@@ -14,7 +14,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- [[ Install `lazy.nvim` plugin manager ]]
---    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -37,7 +36,6 @@ vim.opt.rtp:prepend(lazypath)
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
     -- NOTE: First, some plugins that don't require any configuration
-
     -- Git related plugins
     'tpope/vim-fugitive',
     'tpope/vim-rhubarb',
@@ -289,7 +287,7 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- neotree bindings
-vim.keymap.set('n', '<C-b>', '<Cmd>Neotree toggle<CR>')
+--vim.keymap.set('n', '<C-b>', '<Cmd>Neotree toggle<CR>')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -459,8 +457,8 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-    -- clangd = {},
-    -- gopls = {},
+    --clangd = {},
+    gopls = {},
     -- pyright = {},
     -- rust_analyzer = {},
     -- tsserver = {},
@@ -557,16 +555,12 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
---
---
---
--- OKOK
 
+-- ok
 vim.opt.cursorline = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.ruler = true
-
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 0
 vim.opt.shiftwidth = 4
@@ -574,8 +568,8 @@ vim.opt.expandtab = true
 vim.opt.smarttab = true
 vim.opt.smartindent = true
 vim.opt.linebreak = true
-
 vim.opt.lazyredraw = true
+-- ok
 
 -- FIXME: Is this still needed?
 -- Required by LanguageClient-neovim for operations modifying multiple buffers like rename.
@@ -597,29 +591,16 @@ vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 
---vim.cmd.colorscheme 'noirbuddy'
 
+-- NOIR
 require('noirbuddy').setup {
-    preset = 'kiwi',
-}
-
---[[
-local noirbuddy_lualine = require('noirbuddy.plugins.lualine')
-
-require('lualine').setup {
-    options = {
-        theme = noirbuddy_lualine.theme,
-        -- ...
+    preset = 'minimal',
+    colors = {
+        -- primary = '#ff0088', secondary = '#4ad5ff', background = '#181818',
     },
-    sections = noirbuddy_lualine.sections,
-    inactive_sections = noirbuddy_lualine.inactive_sections,
-    -- ...
 }
-]]
---
 
--- Option 2:
---
+
 local status_ok_colors, colors = pcall(require, "noirbuddy.colors")
 
 if not status_ok_colors then
