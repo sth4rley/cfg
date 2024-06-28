@@ -1,4 +1,4 @@
-# etc
+# my settings
 
 ![noir](https://user-images.githubusercontent.com/3255810/190263629-a0612ab8-6c33-46dd-8077-f8078594e052.png)
 ![noir1](https://user-images.githubusercontent.com/3255810/190263839-f7f4835c-6b67-4b9c-b336-9ea89fea0e51.png)
