@@ -1,0 +1,72 @@
+// -*- mode: json -*-
+
+{
+	"layer": "top",
+	"position": "bottom",
+
+	"modules-left": [
+		"clock",
+	],
+	"modules-center": [
+	],
+	"modules-right": [
+		"memory",
+		"cpu",
+		"pulseaudio",
+		"battery",
+		"tray"
+	],
+
+	"clock": {
+		"format": "{:%a %H:%M %m-%d}",
+		"tooltip": false
+	},
+
+	"pulseaudio": {
+		"format": "VOL {volume:2}%",
+		// "format": "{icon} {volume:2}%",
+		// "format": "{icon} {volume:2}%",
+		// "format": "{icon} {volume:2}%",
+		// "format-bluetooth": "{icon}  {volume}%",
+		"format-muted": "MUTE",
+		// "format-icons": {
+		//	"headphones": "",
+		//	"default": [
+		//		"",
+		//		""
+		//	]
+		// },
+		"scroll-step": 5,
+		"on-click": "pamixer -t",
+		"on-click-right": "pavucontrol"
+	},
+	"memory": {
+		"interval": 5,
+		"format": "MEM {}%"
+	},
+	"cpu": {
+		"interval": 5,
+		"format": "CPU {usage:02}%"
+	},
+	"battery": {
+		"states": {
+			"good": 95,
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "BAT {capacity}%",
+		// "format": "{icon}  {capacity}%",
+		// "format-icons": [
+		// 	"",
+		// 	"",
+		//	"",
+		// 	"",
+		//	""
+		// ]
+	},
+	"tray": {
+		"icon-size": 20
+	},
+
+}
+
