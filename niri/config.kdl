@@ -84,7 +84,7 @@ input {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 5
+    gaps 0
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -163,8 +163,8 @@ layout {
         // If you enable the border, you probably want to disable the focus ring.
         //off
 
-        width 2
-        active-color "#AAAAAA"
+        width 1
+        active-color "#969696"
         inactive-color "#323232"
 
         // active-gradient from="#ffbb66" to="#ffc880" angle=45 relative-to="workspace-view"
@@ -189,7 +189,7 @@ layout {
 // which may be more convenient to use.
 // spawn-at-startup "alacritty" "-e" "fish"
 spawn-at-startup "waybar"
-spawn-at-startup "swaybg" "-i" "/home/sth/wallpaper.jpg"
+spawn-at-startup "swaybg" "-i" "/home/sth/tile-wallpaper.png" "-m" "tile"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -231,7 +231,7 @@ window-rule {
 }
 
 window-rule {
-    geometry-corner-radius 8
+    geometry-corner-radius 0
     clip-to-geometry true
 }
 
