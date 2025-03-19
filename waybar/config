@@ -5,11 +5,14 @@
 	"position": "bottom",
 
 	"modules-left": [
-		"clock",
+		"hyprland/workspaces",
+		"niri/workspaces",
 	],
 	"modules-center": [
+		"clock",
 	],
 	"modules-right": [
+		"network",
 		"memory",
 		"cpu",
 		"pulseaudio",
@@ -18,27 +21,16 @@
 	],
 
 	"clock": {
-		"format": "{:%a %H:%M %m-%d}",
+		"format": "{:%a %H:%M %d-%m-%y}",
 		"tooltip": false
 	},
 
 	"pulseaudio": {
 		"format": "VOL {volume:2}%",
-		// "format": "{icon} {volume:2}%",
-		// "format": "{icon} {volume:2}%",
-		// "format": "{icon} {volume:2}%",
-		// "format-bluetooth": "{icon}  {volume}%",
 		"format-muted": "MUTE",
-		// "format-icons": {
-		//	"headphones": "",
-		//	"default": [
-		//		"",
-		//		""
-		//	]
-		// },
 		"scroll-step": 5,
-		"on-click": "pamixer -t",
-		"on-click-right": "pavucontrol"
+		"on-click": "pavucontrol",
+		"on-click-right": "kitty -e alsamixer"
 	},
 	"memory": {
 		"interval": 5,
@@ -55,18 +47,18 @@
 			"critical": 15
 		},
 		"format": "BAT {capacity}%",
-		// "format": "{icon}  {capacity}%",
-		// "format-icons": [
-		// 	"",
-		// 	"",
-		//	"",
-		// 	"",
-		//	""
-		// ]
 	},
 	"tray": {
 		"icon-size": 20
 	},
+
+ "network": {
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "format-wifi": "{ifname}(W): {ipaddr}/{cidr}",
+        "format-ethernet": "{ifname}(E): {ipaddr}/{cidr}",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-disconnected": "OFFLINE",
+    },
 
 }
 

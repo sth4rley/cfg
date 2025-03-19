@@ -1,29 +1,27 @@
 * {
-	font-size: 15px;
-	font-family: CaskaydiaMono Nerd Font Mono, monospace
+	font-size: 12px;
+	font-family: JetBrainsMono Nerd Font, monospace
 }
 
 window#waybar {
-	background: #262626;
-	color: #fdf6e3;
+	background: #000000;
+	color: #ffffff;
 }
-
 
 #workspaces button {
 	padding: 0 2px;
-	color: #fdf6e3;
+	color: #ffffff;
+	border: none;
+	box-shadow: none; /* Remove predefined box-shadow */
+	margin: 0px 2px;
 }
 #workspaces button.focused {
-	color: #268bd2;
+	background: #d08c04;
 }
 #workspaces button:hover {
-	box-shadow: inherit;
-	text-shadow: inherit;
-}
-#workspaces button:hover {
-	background: #1a1a1a;
-	border: #1a1a1a;
-	padding: 0 3px;
+	background: #f1f1f1;
+	color:#111111;
+	border-color: transparent;
 }
 
 
@@ -34,15 +32,17 @@ window#waybar {
 #cpu,
 #battery,
 #tray {
-	background: #181818;
-	color: #fdf6e3;
+	background: #000000;
+	color: #ffffff;
+	padding: 3px;
 }
 
 #clock,
 #pulseaudio,
 #memory,
 #cpu,
+#network,
 #battery {
-	padding: 0 10px;
+	padding: 0 8px;
 }
 
