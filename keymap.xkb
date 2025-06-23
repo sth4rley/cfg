@@ -1,0 +1,14 @@
+xkb_keymap {
+    xkb_keycodes  { include "evdev+aliases(qwerty)" };
+    xkb_types     { include "complete" };
+    xkb_compat    { include "complete" };
+    xkb_symbols   {
+        include "pc+us(intl)"
+
+        // Remapeia Ctrl direito para AltGr (ISO_Level3_Shift)
+        key <RCTL> { [ ISO_Level3_Shift ] };
+        modifier_map Mod5 { ISO_Level3_Shift };
+    };
+    xkb_geometry  { include "pc(pc105)" };
+};
+

@@ -1,8 +1,7 @@
--- [[ settings ]]
+--[settings ]]
 vim.g.mapleader = " " -- Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.maplocalleader = " "
 vim.g.have_nerd_font = true
-vim.o.guifont = "JetBrainsMono Nerd Font:h12"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a" -- enable mouse mode in "a"ll modes (can be useful for resizing splits for example)
@@ -13,17 +12,25 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300 -- mapped sequence wait time
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-vim.opt.scrolloff = 10 -- minimal number of screen lines to keep above and below the cursor
+vim.opt.scrolloff = 10
 vim.opt.cursorline = true
 vim.opt.inccommand = "split" -- preview subs live, as you type
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.schedule(function() -- Schedule the settings after 'UiEnter' because it can increase startup-time.
+	vim.opt.guifont = "JetBrainsMono Nerd Font:h12"
 	vim.opt.clipboard = "unnamedplus" -- Sync clipboard between OS and Neovim
 end)
 vim.opt.list = true -- sets how neovim will display certain whitespace characters
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+
+--vim.keymap.set("n", "<space>fB", ":Telescope file_browser<CR>")
+
+-- open file_browser with the path of the current buffer
+--vim.keymap.set("n", "<space>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+
+vim.keymap.set("n", "<space>o-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- [[ Keymaps ]]
 vim.keymap.set("n", "<C-s>", function()
@@ -41,7 +48,7 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete current buffer" })
 
 -- [[ Basic Autocommands ]]
 --
@@ -127,11 +134,6 @@ require("lazy").setup({
 		},
 	},
 
-	-- NOTE: Plugins can specify dependencies.
-	--
-	-- The dependencies are proper plugin specifications as well - anything
-	-- you do for a plugin at the top level, you can do for a dependency.
-
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
@@ -179,12 +181,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
 			vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-			--vim.keymap.set(
-			--	"n",
-			--	"<leader>sc",
-			--	":lua require'telescope.builtin'.find_files({cwd=vim.fn.expand('%:p:h')})<CR>",
-			--	{ noremap = true, silent = true }
-			--)
 
 			-- Slightly advanced example of overriding default behavior and theme
 			vim.keymap.set("n", "<leader>/", function()
@@ -548,7 +544,7 @@ require("lazy").setup({
 		lazy = false,
 		priority = 1000,
 		opts = {
-			preset = "minimal",
+			preset = "miami-nights",
 		},
 	},
 
@@ -606,7 +602,6 @@ require("lazy").setup({
 				"query",
 				"vim",
 				"vimdoc",
-				--"norg",
 			},
 			-- Autoinstall languages that are not installed
 			auto_install = true,
@@ -620,7 +615,112 @@ require("lazy").setup({
 			indent = { enable = true, disable = { "ruby" } },
 		},
 	},
+
+	{
+		"CopilotC-Nvim/CopilotChat.nvim",
+		dependencies = {
+			{ "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+			{ "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+		},
+		build = "make tiktoken", -- Only on MacOS or Linux
+		opts = {
+			-- See Configuration section for options
+		},
+		keys = {
+			{ "<leader>zc", ":CopilotChat<CR>", mode = "n", desc = "Chat with Copilot" },
+			{ "<leader>ze", ":CopilotChatExplain<CR>", mode = "v", desc = "Explain Code" },
+			{ "<leader>zr", ":CopilotChatReview<CR>", mode = "v", desc = "Review Code" },
+			{ "<leader>zf", ":CopilotChatFix<CR>", mode = "v", desc = "Fix Code" },
+			{ "<leader>zo", ":CopilotChatOptimize<CR>", mode = "v", desc = "Optimize Code" },
+			{ "<leader>zd", ":CopilotChatDocs<CR>", mode = "v", desc = "Generate Docs" },
+			{ "<leader>zt", ":CopilotChatTests<CR>", mode = "v", desc = "Generate Tests" },
+			{ "<leader>zm", ":CopilotChatCommit<CR>", mode = "n", desc = "Generate Commit Message" },
+			{ "<leader>zs", ":CopilotChatCommit<CR>", mode = "v", desc = "Generate Commit for Selection" },
+		},
+		-- See Commands section for default commands if you want to lazy load on them
+	},
+
+	{
+		"nvim-tree/nvim-tree.lua",
+		version = "*", -- Opcional, mas recomendado para estabilidade
+		dependencies = {
+			"nvim-tree/nvim-web-devicons", -- Essencial para ícones bonitos
+		},
+		opts = {
+			disable_netrw = true, -- Desativa o netrw
+			sort = {
+				sorter = "case_sensitive",
+			},
+			view = {
+				width = 30,
+			},
+			renderer = {
+				group_empty = true,
+			},
+			filters = {
+				dotfiles = true,
+			},
+		},
+		-- Atalhos para usar o plugin (e fazê-lo carregar sob demanda)
+		keys = {
+			{
+				"<leader>e",
+				function()
+					require("nvim-tree.api").tree.toggle()
+				end,
+				desc = "Alternar explorador de arquivos (NvimTree)",
+			},
+			{
+				-- Este atalho é útil para encontrar o arquivo atual na árvore
+				"<leader>E",
+				function()
+					require("nvim-tree.api").tree.find_file({ open = true })
+				end,
+				desc = "Encontrar arquivo atual (NvimTree)",
+			},
+		},
+	},
+	{
+		"NeogitOrg/neogit",
+		dependencies = {
+			"nvim-lua/plenary.nvim", -- required
+			"sindrets/diffview.nvim", -- optional - Diff integration
+			"nvim-telescope/telescope.nvim", -- optional
+		},
+	},
+
+	--	{
+	--		"nvim-telescope/telescope-file-browser.nvim",
+	--		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+	-- },
+
+	{
+		"stevearc/oil.nvim",
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {},
+		-- Optional dependencies
+		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+		lazy = false,
+	},
+
+	--	{
+	--		"akinsho/toggleterm.nvim",
+	--		version = "*",
+	--		config = true,
+	--		opts = {
+	--			-- direction = "horizontal",
+	--			--size = function()
+	--			--	return vim.o.columns * 0.3
+	--			--end,
+	--		},
+	--		keys = {
+	--			{ "<leader>tt", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "Abrir terminal na lateral direita" },
+	--		},
+	--	},
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
--
+-- vim: ts=2 sts=2 sw=2 et
