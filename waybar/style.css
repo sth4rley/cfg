@@ -21,7 +21,7 @@ window#waybar > box {
 }
 
 #workspaces button.focused {
-	background: #d35400;
+	background: #269eaa;
 	font-weight: 900;
 }
 
@@ -59,4 +59,3 @@ window#waybar > box {
 #battery {
 	padding: 0 8px;
 }
-

@@ -50,6 +50,13 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete current buffer" })
 
+-- REST
+vim.keymap.set("n", "<Leader>h", "<cmd>Rest run<cr>", {
+	noremap = true,
+	silent = true,
+	desc = "Executar Requisição (rest.nvim)",
+})
+
 -- [[ Basic Autocommands ]]
 --
 -- Highlight when yanking (copying) text (Try it with `yap` in normal mode)
@@ -536,17 +543,19 @@ require("lazy").setup({
 		end,
 	},
 
-	{
-		"jesseleite/nvim-noirbuddy",
-		dependencies = {
-			{ "tjdevries/colorbuddy.nvim" },
-		},
-		lazy = false,
-		priority = 1000,
-		opts = {
-			preset = "miami-nights",
-		},
-	},
+	--{
+	--	"jesseleite/nvim-noirbuddy",
+	--	dependencies = {
+	--		{ "tjdevries/colorbuddy.nvim" },
+	--	},
+	--	lazy = false,
+	--	priority = 1000,
+	--	opts = {
+	--		preset = "miami-nights",
+	--	},
+	-- },
+
+	{ "EdenEast/nightfox.nvim" },
 
 	-- Highlight todo, notes, etc in comments
 	{
@@ -636,6 +645,7 @@ require("lazy").setup({
 			{ "<leader>zt", ":CopilotChatTests<CR>", mode = "v", desc = "Generate Tests" },
 			{ "<leader>zm", ":CopilotChatCommit<CR>", mode = "n", desc = "Generate Commit Message" },
 			{ "<leader>zs", ":CopilotChatCommit<CR>", mode = "v", desc = "Generate Commit for Selection" },
+			{ "<leader>zi", ":Copilot<CR>", mode = "n", desc = "Iniciar Copilot" },
 		},
 		-- See Commands section for default commands if you want to lazy load on them
 	},
@@ -706,6 +716,17 @@ require("lazy").setup({
 		lazy = false,
 	},
 
+	{
+		"rest-nvim/rest.nvim",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			opts = function(_, opts)
+				opts.ensure_installed = opts.ensure_installed or {}
+				table.insert(opts.ensure_installed, "http")
+			end,
+		},
+	},
+
 	--	{
 	--		"akinsho/toggleterm.nvim",
 	--		version = "*",
@@ -722,5 +743,54 @@ require("lazy").setup({
 	--	},
 })
 
+-- Default options
+require("nightfox").setup({
+	options = {
+		-- Compiled file's destination location
+		compile_path = vim.fn.stdpath("cache") .. "/nightfox",
+		compile_file_suffix = "_compiled", -- Compiled file suffix
+		transparent = false, -- Disable setting background
+		terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+		dim_inactive = false, -- Non focused panes set to alternative background
+		module_default = true, -- Default enable value for modules
+		colorblind = {
+			enable = false, -- Enable colorblind support
+			simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
+			severity = {
+				protan = 0, -- Severity [0,1] for protan (red)
+				deutan = 0, -- Severity [0,1] for deutan (green)
+				tritan = 0, -- Severity [0,1] for tritan (blue)
+			},
+		},
+		styles = { -- Style to be applied to different syntax groups
+			comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
+			conditionals = "NONE",
+			constants = "NONE",
+			functions = "NONE",
+			keywords = "NONE",
+			numbers = "NONE",
+			operators = "NONE",
+			strings = "NONE",
+			types = "NONE",
+			variables = "NONE",
+		},
+		inverse = { -- Inverse highlight for different types
+			match_paren = false,
+			visual = false,
+			search = false,
+		},
+		modules = { -- List of various plugins and additional options
+			-- ...
+		},
+	},
+	palettes = {},
+	specs = {},
+	groups = {},
+})
+
+-- setup must be called before loading
+vim.cmd("colorscheme carbonfox")
+--vim.cmd.colorscheme("ashen")
+--vim.cmd([[colorscheme modus]]) -- modus_operandi, modus_vivendi
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
