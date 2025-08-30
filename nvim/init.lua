@@ -22,7 +22,7 @@ vim.schedule(function() -- Schedule the settings after 'UiEnter' because it can 
 	vim.opt.guifont = "JetBrainsMono Nerd Font:h12"
 	vim.opt.clipboard = "unnamedplus" -- Sync clipboard between OS and Neovim
 end)
-vim.opt.list = true -- sets how neovim will display certain whitespace characters
+vim.opt.list = false -- sets how neovim will display certain whitespace characters
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 --vim.keymap.set("n", "<space>fB", ":Telescope file_browser<CR>")
@@ -543,19 +543,17 @@ require("lazy").setup({
 		end,
 	},
 
-	--{
-	--	"jesseleite/nvim-noirbuddy",
-	--	dependencies = {
-	--		{ "tjdevries/colorbuddy.nvim" },
-	--	},
-	--	lazy = false,
-	--	priority = 1000,
-	--	opts = {
-	--		preset = "miami-nights",
-	--	},
-	-- },
-
-	{ "EdenEast/nightfox.nvim" },
+	{
+		"jesseleite/nvim-noirbuddy",
+		dependencies = {
+			{ "tjdevries/colorbuddy.nvim" },
+		},
+		lazy = false,
+		priority = 1000,
+		opts = {
+			preset = "minimal",
+		},
+	},
 
 	-- Highlight todo, notes, etc in comments
 	{
@@ -715,82 +713,7 @@ require("lazy").setup({
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		lazy = false,
 	},
-
-	{
-		"rest-nvim/rest.nvim",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			opts = function(_, opts)
-				opts.ensure_installed = opts.ensure_installed or {}
-				table.insert(opts.ensure_installed, "http")
-			end,
-		},
-	},
-
-	--	{
-	--		"akinsho/toggleterm.nvim",
-	--		version = "*",
-	--		config = true,
-	--		opts = {
-	--			-- direction = "horizontal",
-	--			--size = function()
-	--			--	return vim.o.columns * 0.3
-	--			--end,
-	--		},
-	--		keys = {
-	--			{ "<leader>tt", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "Abrir terminal na lateral direita" },
-	--		},
-	--	},
 })
 
--- Default options
-require("nightfox").setup({
-	options = {
-		-- Compiled file's destination location
-		compile_path = vim.fn.stdpath("cache") .. "/nightfox",
-		compile_file_suffix = "_compiled", -- Compiled file suffix
-		transparent = false, -- Disable setting background
-		terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
-		dim_inactive = false, -- Non focused panes set to alternative background
-		module_default = true, -- Default enable value for modules
-		colorblind = {
-			enable = false, -- Enable colorblind support
-			simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
-			severity = {
-				protan = 0, -- Severity [0,1] for protan (red)
-				deutan = 0, -- Severity [0,1] for deutan (green)
-				tritan = 0, -- Severity [0,1] for tritan (blue)
-			},
-		},
-		styles = { -- Style to be applied to different syntax groups
-			comments = "NONE", -- Value is any valid attr-list value `:help attr-list`
-			conditionals = "NONE",
-			constants = "NONE",
-			functions = "NONE",
-			keywords = "NONE",
-			numbers = "NONE",
-			operators = "NONE",
-			strings = "NONE",
-			types = "NONE",
-			variables = "NONE",
-		},
-		inverse = { -- Inverse highlight for different types
-			match_paren = false,
-			visual = false,
-			search = false,
-		},
-		modules = { -- List of various plugins and additional options
-			-- ...
-		},
-	},
-	palettes = {},
-	specs = {},
-	groups = {},
-})
-
--- setup must be called before loading
-vim.cmd("colorscheme carbonfox")
---vim.cmd.colorscheme("ashen")
---vim.cmd([[colorscheme modus]]) -- modus_operandi, modus_vivendi
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
