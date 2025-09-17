@@ -24,6 +24,12 @@ vim.schedule(function() -- Schedule the settings after 'UiEnter' because it can 
 end)
 vim.opt.list = false -- sets how neovim will display certain whitespace characters
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.keymap.set(
+	"n",
+	"<leader>cv",
+	":CsvViewToggle delimiter=, display_mode=border header_lnum=1<CR>",
+	{ desc = "Toggle CSVView with custom options" }
+)
 
 --vim.keymap.set("n", "<space>fB", ":Telescope file_browser<CR>")
 
@@ -49,13 +55,7 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete current buffer" })
-
--- REST
-vim.keymap.set("n", "<Leader>h", "<cmd>Rest run<cr>", {
-	noremap = true,
-	silent = true,
-	desc = "Executar Requisição (rest.nvim)",
-})
+vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
 
 -- [[ Basic Autocommands ]]
 --
@@ -543,16 +543,23 @@ require("lazy").setup({
 		end,
 	},
 
+	--	{
+	--		"jesseleite/nvim-noirbuddy",
+	--		dependencies = {
+	--			{ "tjdevries/colorbuddy.nvim" },
+	--		},
+	--		lazy = false,
+	--		priority = 1000,
+	--		opts = {
+	--			preset = "miami-nights",
+	--		},
+	--	},
+
 	{
-		"jesseleite/nvim-noirbuddy",
-		dependencies = {
-			{ "tjdevries/colorbuddy.nvim" },
-		},
+		"wtfox/jellybeans.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {
-			preset = "minimal",
-		},
+		opts = {}, -- OptionalA
 	},
 
 	-- Highlight todo, notes, etc in comments
@@ -578,6 +585,15 @@ require("lazy").setup({
 			-- - sd'   - [S]urround [D]elete [']quotes
 			-- - sr)'  - [S]urround [R]eplace [)] [']
 			require("mini.surround").setup()
+
+			-- Indent scope highlight
+			require("mini.indentscope").setup({
+				symbol = "│", -- Você pode trocar o símbolo se quiser
+				options = { try_as_border = true },
+			})
+
+			-- Autopairs (mini.pairs)
+			require("mini.pairs").setup()
 
 			-- Simple and easy statusline.
 			local statusline = require("mini.statusline")
@@ -713,7 +729,32 @@ require("lazy").setup({
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		lazy = false,
 	},
+
+	{
+		"hat0uma/csvview.nvim",
+		---@module "csvview"
+		---@type CsvView.Options
+		opts = {
+			parser = { comments = { "#", "//" } },
+			keymaps = {
+				-- Text objects for selecting fields
+				textobject_field_inner = { "if", mode = { "o", "x" } },
+				textobject_field_outer = { "af", mode = { "o", "x" } },
+				-- Excel-like navigation:
+				-- Use <Tab> and <S-Tab> to move horizontally between fields.
+				-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+				-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+				jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+				jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+				jump_next_row = { "<Enter>", mode = { "n", "v" } },
+				jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+			},
+		},
+		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+	},
 })
+
+vim.cmd([[colorscheme jellybeans-muted]])
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
