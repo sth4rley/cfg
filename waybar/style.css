@@ -1,42 +1,52 @@
+
+/* Fonte e estilo base */
 * {
-	font-size: 12px;
-	font-family: JetBrainsMono Nerd Font, monospace;
-	font-weight: 700;
+    font-size: 13px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-weight: 600;
 }
 
+/* Fundo principal */
 window#waybar {
-	background: #141414;
-	color: #ffffff;
+    background: #141414;
+    color: #e5e5e5;
+    border-bottom: 1px solid #222;
 }
 
+/* Espaçamento da barra */
 window#waybar > box {
-    margin: 4px 2px;
+    margin: 4px 6px;
+}
+
+/* Workspaces */
+#workspaces {
+    background: #1d1d1d;
+    border-radius: 6px;
+    padding: 2px;
 }
 
 #workspaces button {
-	padding: 0 6px;
-	color: #ffffff;
-	border: none;
-	border-radius: 5px;
+    padding: 4px 10px;
+    margin: 0 2px;
+    border-radius: 6px;
+    border: none;
+    color: #e5e5e5;
+    transition: all 0.2s ease;
 }
 
 #workspaces button.focused {
-	background: #269eaa;
-	font-weight: 900;
+    background: #26a6b5;
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 0 6px #26a6b577;
 }
 
 #workspaces button:hover {
-	background: #f1f1f1;
-	color:#111111;
-	border-color: transparent;
+    background: #f1f1f1;
+    color: #111111;
 }
 
-#workspaces{
-	background: #222222;
-	color: #ffffff;
-	border-radius: 5px;
-}
-
+/* Módulos da barra */
 #clock,
 #pulseaudio,
 #memory,
@@ -44,18 +54,29 @@ window#waybar > box {
 #network,
 #battery,
 #tray {
-	background: #252525;
-	color: #ffffff;
-	padding: 1px 3px;
-	margin: 0px 4px;
-	border-radius: 5px;
+    background: #1d1d1d;
+    color: #e5e5e5;
+    padding: 4px 10px;
+    margin: 0 4px;
+    border-radius: 6px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-#clock,
-#pulseaudio,
-#memory,
-#cpu,
-#network,
-#battery {
-	padding: 0 8px;
+/* Hover para os módulos */
+#clock:hover,
+#pulseaudio:hover,
+#memory:hover,
+#cpu:hover,
+#network:hover,
+#battery:hover {
+    background: #26a6b5;
+    color: #ffffff;
+}
+
+/* Tray com menos destaque */
+#tray {
+    background: #222;
+    padding: 4px 6px;
+    border-radius: 6px;
 }
