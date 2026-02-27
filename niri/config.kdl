@@ -108,7 +108,7 @@ hotkey-overlay{
 // Settings that influence how windows are positioned and sized.
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
-    gaps 5
+    gaps 3
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -316,7 +316,7 @@ window-rule {
 // Example: enable rounded corners for all windows.
 // (This example rule is commented out with a "/-" in front.)
 window-rule {
-    geometry-corner-radius 5
+    geometry-corner-radius 4
     clip-to-geometry true
 }
 

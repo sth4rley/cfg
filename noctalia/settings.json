@@ -39,7 +39,7 @@
     "bar": {
         "autoHideDelay": 500,
         "autoShowDelay": 150,
-        "backgroundOpacity": 0.93,
+        "backgroundOpacity": 1,
         "barType": "simple",
         "capsuleColorKey": "none",
         "capsuleOpacity": 1,
@@ -59,7 +59,7 @@
         ],
         "showCapsule": true,
         "showOutline": false,
-        "useSeparateOpacity": false,
+        "useSeparateOpacity": true,
         "widgets": {
             "center": [
                 {
@@ -74,11 +74,6 @@
             ],
             "left": [
                 {
-                    "icon": "rocket",
-                    "iconColor": "none",
-                    "id": "Launcher"
-                },
-                {
                     "characterCount": 2,
                     "colorizeIcons": false,
                     "emptyColor": "secondary",
@@ -89,23 +84,13 @@
                     "hideUnoccupied": false,
                     "iconScale": 0.8,
                     "id": "Workspace",
-                    "labelMode": "index",
+                    "labelMode": "none",
                     "occupiedColor": "secondary",
                     "pillSize": 0.6,
                     "showApplications": false,
                     "showBadge": true,
                     "showLabelsOnlyWhenOccupied": true,
                     "unfocusedIconsOpacity": 1
-                },
-                {
-                    "colorizeIcons": false,
-                    "hideMode": "hidden",
-                    "id": "ActiveWindow",
-                    "maxWidth": 145,
-                    "scrollingMode": "hover",
-                    "showIcon": false,
-                    "textColor": "none",
-                    "useFixedWidth": true
                 }
             ],
             "right": [
@@ -141,7 +126,7 @@
                     "showDiskUsageAsPercent": false,
                     "showGpuTemp": false,
                     "showLoadAverage": false,
-                    "showMemoryAsPercent": false,
+                    "showMemoryAsPercent": true,
                     "showMemoryUsage": true,
                     "showNetworkStats": false,
                     "showSwapUsage": false,
@@ -210,7 +195,7 @@
     },
     "colorSchemes": {
         "darkMode": true,
-        "generationMethod": "tonal-spot",
+        "generationMethod": "monochrome",
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
         "monitorForColors": "",
@@ -279,7 +264,7 @@
         }
     },
     "desktopWidgets": {
-        "enabled": false,
+        "enabled": true,
         "gridSnap": false,
         "monitorWidgets": [
         ]
