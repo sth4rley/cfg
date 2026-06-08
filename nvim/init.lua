@@ -24,12 +24,6 @@ vim.schedule(function() -- Schedule the settings after 'UiEnter' because it can 
 end)
 vim.opt.list = false -- sets how neovim will display certain whitespace characters
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-vim.keymap.set(
-	"n",
-	"<leader>cv",
-	":CsvViewToggle delimiter=, display_mode=border header_lnum=1<CR>",
-	{ desc = "Toggle CSVView with custom options" }
-)
 
 --vim.keymap.set("n", "<space>fB", ":Telescope file_browser<CR>")
 
@@ -55,7 +49,6 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete current buffer" })
-vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
 
 -- [[ Basic Autocommands ]]
 --
@@ -82,7 +75,10 @@ vim.opt.rtp:prepend(lazypath)
 -- [[ Configure and install plugins - :Lazy ]]
 require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-	"ThePrimeagen/vim-be-good",
+	{
+		"ThePrimeagen/vim-be-good",
+		cmd = "VimBeGood",
+	},
 
 	-- NOTE: Plugins can also be added by using a table,
 	-- Use `opts = {}` to force a plugin to be loaded.
@@ -93,6 +89,7 @@ require("lazy").setup({
 	--
 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
 		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
 		opts = {
 			signs = {
 				add = { text = "+" },
@@ -143,8 +140,47 @@ require("lazy").setup({
 
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
-		event = "VimEnter",
 		branch = "0.1.x",
+		cmd = "Telescope",
+		keys = {
+			{ "<leader>sh", "<cmd>Telescope help_tags<CR>", desc = "[S]earch [H]elp" },
+			{ "<leader>sk", "<cmd>Telescope keymaps<CR>", desc = "[S]earch [K]eymaps" },
+			{ "<leader>sf", "<cmd>Telescope find_files<CR>", desc = "[S]earch [F]iles" },
+			{ "<leader>ss", "<cmd>Telescope builtin<CR>", desc = "[S]earch [S]elect Telescope" },
+			{ "<leader>sw", "<cmd>Telescope grep_string<CR>", desc = "[S]earch current [W]ord" },
+			{ "<leader>sg", "<cmd>Telescope live_grep<CR>", desc = "[S]earch by [G]rep" },
+			{ "<leader>sd", "<cmd>Telescope diagnostics<CR>", desc = "[S]earch [D]iagnostics" },
+			{ "<leader>sr", "<cmd>Telescope resume<CR>", desc = "[S]earch [R]esume" },
+			{ "<leader>s.", "<cmd>Telescope oldfiles<CR>", desc = '[S]earch Recent Files ("." for repeat)' },
+			{ "<leader><leader>", "<cmd>Telescope buffers<CR>", desc = "[ ] Find existing buffers" },
+			{
+				"<leader>/",
+				function()
+					require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+						winblend = 10,
+						previewer = false,
+					}))
+				end,
+				desc = "[/] Fuzzily search in current buffer",
+			},
+			{
+				"<leader>s/",
+				function()
+					require("telescope.builtin").live_grep({
+						grep_open_files = true,
+						prompt_title = "Live Grep in Open Files",
+					})
+				end,
+				desc = "[S]earch [/] in Open Files",
+			},
+			{
+				"<leader>sn",
+				function()
+					require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+				end,
+				desc = "[S]earch [N]eovim files",
+			},
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -176,41 +212,6 @@ require("lazy").setup({
 			-- Enable Telescope extensions if they are installed
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "ui-select")
-
-			local builtin = require("telescope.builtin") -- see `:help telescope.builtin` for more information
-			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
-			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
-			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
-			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
-			vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-			vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-			vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
-			vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-
-			-- Slightly advanced example of overriding default behavior and theme
-			vim.keymap.set("n", "<leader>/", function()
-				-- You can pass additional configuration to Telescope to change the theme, layout, etc.
-				builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-					winblend = 10,
-					previewer = false,
-				}))
-			end, { desc = "[/] Fuzzily search in current buffer" })
-
-			-- It's also possible to pass additional configuration options.
-			--  See `:help telescope.builtin.live_grep()` for information about particular keys
-			vim.keymap.set("n", "<leader>s/", function()
-				builtin.live_grep({
-					grep_open_files = true,
-					prompt_title = "Live Grep in Open Files",
-				})
-			end, { desc = "[S]earch [/] in Open Files" })
-
-			-- Shortcut for searching your Neovim configuration files
-			vim.keymap.set("n", "<leader>sn", function()
-				builtin.find_files({ cwd = vim.fn.stdpath("config") })
-			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
 
@@ -239,7 +240,14 @@ require("lazy").setup({
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
 
 			-- Useful status updates for LSP.
-			{ "j-hui/fidget.nvim", opts = {} },
+			{
+				"j-hui/fidget.nvim",
+				opts = {
+					integration = {
+						["nvim-tree"] = { enable = false },
+					},
+				},
+			},
 
 			-- Allows extra capabilities provided by nvim-cmp
 			"hrsh7th/cmp-nvim-lsp",
@@ -264,29 +272,30 @@ require("lazy").setup({
 						mode = mode or "n"
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
+					local telescope = function(picker)
+						return function()
+							require("telescope.builtin")[picker]()
+						end
+					end
 
 					-- Jump to the definition of the word under your cursor.
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition") -- definition of the word under your cursor
-					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences") -- references for the word under your cursor
+					map("gd", telescope("lsp_definitions"), "[G]oto [D]efinition") -- definition of the word under your cursor
+					map("gr", telescope("lsp_references"), "[G]oto [R]eferences") -- references for the word under your cursor
 
 					-- Jump to the implementation of the word under your cursor.
 					--  Useful when your language has ways of declaring types without an actual implementation.
-					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-					map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition") -- type definition of the word under your cursor
+					map("gI", telescope("lsp_implementations"), "[G]oto [I]mplementation")
+					map("<leader>D", telescope("lsp_type_definitions"), "Type [D]efinition") -- type definition of the word under your cursor
 
 					-- Fuzzy find all the symbols in your current document.
 					--  Symbols are things like variables, functions, types, etc.
-					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+					map("<leader>ds", telescope("lsp_document_symbols"), "[D]ocument [S]ymbols")
 
 					-- Fuzzy find all the symbols in your current workspace.
 					--  Similar to document symbols, except searches over your entire project.
-					map(
-						"<leader>ws",
-						require("telescope.builtin").lsp_dynamic_workspace_symbols,
-						"[W]orkspace [S]ymbols"
-					)
+					map("<leader>ws", telescope("lsp_dynamic_workspace_symbols"), "[W]orkspace [S]ymbols")
 
 					-- Rename the variable under your cursor.
 					--  Most Language Servers support renaming across files, etc.
@@ -335,7 +344,10 @@ require("lazy").setup({
 					-- This may be unwanted, since they displace some of your code
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
 						map("<leader>th", function()
-							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
+							vim.lsp.inlay_hint.enable(
+								not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+								{ bufnr = event.buf }
+							)
 						end, "[T]oggle Inlay [H]ints")
 					end
 				end,
@@ -357,7 +369,7 @@ require("lazy").setup({
 								typeCheckingMode = "basic",
 								useLibraryCodeForTypes = true,
 								autoSearchPaths = true,
-								diagnosticMode = "workspace",
+								diagnosticMode = "openFilesOnly",
 							},
 						},
 					},
@@ -372,7 +384,7 @@ require("lazy").setup({
 							completion = {
 								callSnippet = "Replace",
 							},
-							diagnosdiagnosdiagnostics = { disable = { "missing-fields" } }, -- to ignore Lua_LS's noisy `missing-fields` warnings
+							diagnostics = { disable = { "missing-fields" } }, -- to ignore Lua_LS's noisy `missing-fields` warnings
 						},
 					},
 				},
@@ -384,20 +396,17 @@ require("lazy").setup({
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, { -- you can add more tools here
 				"stylua", -- Used to format Lua code
+				"ruff", -- Used to format Python code
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
+			for server_name, server in pairs(servers) do
+				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+				vim.lsp.config(server_name, server)
+			end
+
 			require("mason-lspconfig").setup({
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						-- This handles overriding only values explicitly passed
-						-- by the server configuration above. Useful when disabling
-						-- certain features of an LSP (for example, turning off formatting for ts_ls)
-						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
-					end,
-				},
+				automatic_enable = vim.tbl_keys(servers),
 			})
 		end,
 	},
@@ -436,6 +445,7 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
+				python = { "ruff_format" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
@@ -609,11 +619,11 @@ require("lazy").setup({
 
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		lazy = false,
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs", -- Sets main module to use for opts
-		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-		opts = {
-			ensure_installed = {
+		config = function()
+			local languages = {
 				"bash",
 				"c",
 				"diff",
@@ -622,95 +632,30 @@ require("lazy").setup({
 				"luadoc",
 				"markdown",
 				"markdown_inline",
+				"python",
 				"query",
 				"vim",
 				"vimdoc",
-			},
-			-- Autoinstall languages that are not installed
-			auto_install = true,
-			highlight = {
-				enable = true,
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
-		},
-	},
+			}
 
-	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		dependencies = {
-			{ "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
-			{ "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-		},
-		build = "make tiktoken", -- Only on MacOS or Linux
-		opts = {
-			-- See Configuration section for options
-		},
-		keys = {
-			{ "<leader>zc", ":CopilotChat<CR>", mode = "n", desc = "Chat with Copilot" },
-			{ "<leader>ze", ":CopilotChatExplain<CR>", mode = "v", desc = "Explain Code" },
-			{ "<leader>zr", ":CopilotChatReview<CR>", mode = "v", desc = "Review Code" },
-			{ "<leader>zf", ":CopilotChatFix<CR>", mode = "v", desc = "Fix Code" },
-			{ "<leader>zo", ":CopilotChatOptimize<CR>", mode = "v", desc = "Optimize Code" },
-			{ "<leader>zd", ":CopilotChatDocs<CR>", mode = "v", desc = "Generate Docs" },
-			{ "<leader>zt", ":CopilotChatTests<CR>", mode = "v", desc = "Generate Tests" },
-			{ "<leader>zm", ":CopilotChatCommit<CR>", mode = "n", desc = "Generate Commit Message" },
-			{ "<leader>zs", ":CopilotChatCommit<CR>", mode = "v", desc = "Generate Commit for Selection" },
-			{ "<leader>zi", ":Copilot<CR>", mode = "n", desc = "Iniciar Copilot" },
-		},
-		-- See Commands section for default commands if you want to lazy load on them
-	},
+			local treesitter = require("nvim-treesitter")
+			treesitter.setup({})
+			treesitter.install(languages)
 
-	{
-		"nvim-tree/nvim-tree.lua",
-		version = "*", -- Opcional, mas recomendado para estabilidade
-		dependencies = {
-			"nvim-tree/nvim-web-devicons", -- Essencial para ícones bonitos
-		},
-		opts = {
-			disable_netrw = true, -- Desativa o netrw
-			sort = {
-				sorter = "case_sensitive",
-			},
-			view = {
-				width = 30,
-			},
-			renderer = {
-				group_empty = true,
-			},
-			filters = {
-				dotfiles = true,
-			},
-		},
-		-- Atalhos para usar o plugin (e fazê-lo carregar sob demanda)
-		keys = {
-			{
-				"<leader>e",
-				function()
-					require("nvim-tree.api").tree.toggle()
+			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
+				callback = function(event)
+					local lang = vim.treesitter.language.get_lang(vim.bo[event.buf].filetype)
+					if not lang or not vim.tbl_contains(languages, lang) then
+						return
+					end
+
+					if pcall(vim.treesitter.start, event.buf, lang) and lang ~= "ruby" then
+						vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					end
 				end,
-				desc = "Alternar explorador de arquivos (NvimTree)",
-			},
-			{
-				-- Este atalho é útil para encontrar o arquivo atual na árvore
-				"<leader>E",
-				function()
-					require("nvim-tree.api").tree.find_file({ open = true })
-				end,
-				desc = "Encontrar arquivo atual (NvimTree)",
-			},
-		},
-	},
-	{
-		"NeogitOrg/neogit",
-		dependencies = {
-			"nvim-lua/plenary.nvim", -- required
-			"sindrets/diffview.nvim", -- optional - Diff integration
-			"nvim-telescope/telescope.nvim", -- optional
-		},
+			})
+		end,
 	},
 
 	--	{
@@ -725,32 +670,8 @@ require("lazy").setup({
 		opts = {},
 		-- Optional dependencies
 		dependencies = { { "echasnovski/mini.icons", opts = {} } },
-		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		lazy = false,
-	},
-
-	{
-		"hat0uma/csvview.nvim",
-		---@module "csvview"
-		---@type CsvView.Options
-		opts = {
-			parser = { comments = { "#", "//" } },
-			keymaps = {
-				-- Text objects for selecting fields
-				textobject_field_inner = { "if", mode = { "o", "x" } },
-				textobject_field_outer = { "af", mode = { "o", "x" } },
-				-- Excel-like navigation:
-				-- Use <Tab> and <S-Tab> to move horizontally between fields.
-				-- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
-				-- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
-				jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
-				jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
-				jump_next_row = { "<Enter>", mode = { "n", "v" } },
-				jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
-			},
-		},
-		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
 	},
 })
 
