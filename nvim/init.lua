@@ -50,6 +50,15 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Delete current buffer" })
 
+-- Tabpages
+vim.keymap.set("n", "<leader><Tab>n", "<cmd>tabnew<CR>", { desc = "Tab: New" })
+vim.keymap.set("n", "<leader><Tab>c", "<cmd>tabclose<CR>", { desc = "Tab: Close" })
+vim.keymap.set("n", "<leader><Tab>o", "<cmd>tabonly<CR>", { desc = "Tab: Only (close others)" })
+-- Jump straight to a tabpage by number: <leader>1 .. <leader>9
+for i = 1, 9 do
+	vim.keymap.set("n", "<leader>" .. i, i .. "gt", { desc = "Go to tab " .. i })
+end
+
 -- [[ Basic Autocommands ]]
 --
 -- Highlight when yanking (copying) text (Try it with `yap` in normal mode)
@@ -566,10 +575,10 @@ require("lazy").setup({
 	--	},
 
 	{
-		"wtfox/jellybeans.nvim",
+		--"wtfox/jellybeans.nvim",
+		"nyoom-engineering/oxocarbon.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {}, -- OptionalA
 	},
 
 	-- Highlight todo, notes, etc in comments
@@ -673,9 +682,21 @@ require("lazy").setup({
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		lazy = false,
 	},
+	-- For `plugins.lua` users.
+	{
+		-- WARN: Do not lazy load this plugin as it is already lazy-loaded. Lazy-loading may cause more time for the previews to load when starting Neovim!
+		"OXY2DEV/markview.nvim",
+		lazy = false,
+
+		-- Completion for `blink.cmp`
+		-- dependencies = { "saghen/blink.cmp" },
+	},
 })
 
-vim.cmd([[colorscheme jellybeans-muted]])
+--vim.cmd([[colorscheme jellybeans-muted]])
+--
+vim.opt.background = "dark"
+vim.cmd.colorscheme("oxocarbon")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
