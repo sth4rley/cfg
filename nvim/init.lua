@@ -142,6 +142,7 @@ require("lazy").setup({
 				{ "<leader>s", group = "[S]earch" },
 				{ "<leader>w", group = "[W]orkspace" },
 				{ "<leader>t", group = "[T]oggle" },
+				{ "<leader>u", group = "[U]I" },
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
 			},
 		},
@@ -162,6 +163,11 @@ require("lazy").setup({
 			{ "<leader>sr", "<cmd>Telescope resume<CR>", desc = "[S]earch [R]esume" },
 			{ "<leader>s.", "<cmd>Telescope oldfiles<CR>", desc = '[S]earch Recent Files ("." for repeat)' },
 			{ "<leader><leader>", "<cmd>Telescope buffers<CR>", desc = "[ ] Find existing buffers" },
+			{
+				"<leader>uc",
+				"<cmd>Telescope colorscheme enable_preview=true<CR>",
+				desc = "[U]I [C]olorscheme (live preview)",
+			},
 			{
 				"<leader>/",
 				function()
@@ -251,11 +257,7 @@ require("lazy").setup({
 			-- Useful status updates for LSP.
 			{
 				"j-hui/fidget.nvim",
-				opts = {
-					integration = {
-						["nvim-tree"] = { enable = false },
-					},
-				},
+				opts = {},
 			},
 
 			-- Allows extra capabilities provided by nvim-cmp
@@ -324,7 +326,7 @@ require("lazy").setup({
 					--
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
-					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+					if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
 						local highlight_augroup =
 							vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -351,7 +353,7 @@ require("lazy").setup({
 					-- The following code creates a keymap to toggle inlay hints in your
 					-- code, if the language server you are using supports them
 					-- This may be unwanted, since they displace some of your code
-					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+					if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(
 								not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
@@ -574,12 +576,22 @@ require("lazy").setup({
 	--		},
 	--	},
 
+	-- Colorschemes
 	{
 		--"wtfox/jellybeans.nvim",
 		"nyoom-engineering/oxocarbon.nvim",
 		lazy = false,
-		priority = 1000,
+		priority = 1000, -- load the active colorscheme first
 	},
+	-- Extra colorschemes (registered at startup so they show in :Telescope colorscheme;
+	-- loading them only makes the theme available, it does not apply it)
+	{ "ceigh/vercel-theme.nvim", lazy = false },
+	{ "pmouraguedes/neodarcula.nvim", lazy = false },
+	{ "hendriknielaender/stardust.nvim", lazy = false },
+	{ "xero/miasma.nvim", lazy = false },
+	{ "oskarnurm/koda.nvim", lazy = false },
+	{ "jpwol/thorn.nvim", lazy = false },
+	{ "alexpasmantier/hubbamax.nvim", lazy = false },
 
 	-- Highlight todo, notes, etc in comments
 	{
