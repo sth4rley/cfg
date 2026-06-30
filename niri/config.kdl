@@ -16,7 +16,7 @@ input {
     touchpad {
         // off
         tap
-        // dwt
+        dwt
         // dwtp
         // drag false
         // drag-lock
@@ -109,6 +109,12 @@ hotkey-overlay{
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
     gaps 3
+
+    // Centraliza a coluna quando há apenas uma na tela.
+    always-center-single-column
+
+    // Mantém um workspace vazio acima do primeiro.
+    empty-workspace-above-first
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -246,12 +252,24 @@ layout {
 spawn-at-startup "qs" "-c" "noctalia-shell" "--no-duplicate"
 spawn-at-startup "swaybg" "-i" "/home/sth/wall.png" // "-m" "tile"
 spawn-at-startup "/usr/libexec/kf6/polkit-kde-authentication-agent-1"
-spawn-at-startup "xwayland-satellite"
 spawn-at-startup "handy" "--start-hidden"
 
+// Modo servidor do foot: um processo compartilhado; cada janela nova é um
+// `footclient` (abertura quase instantânea, memória compartilhada).
+spawn-at-startup "foot" "--server"
+
+// Integração nativa do xwayland-satellite (niri 26.04+).
+// Substitui o antigo `spawn-at-startup "xwayland-satellite"`; o niri
+// gerencia o processo e define o DISPLAY automaticamente.
+xwayland-satellite {
+    path "xwayland-satellite"
+}
+
 environment {
-    DISPLAY ":0"
     GTK_IM_MODULE "simple"
+    MOZ_ENABLE_WAYLAND "1"          // Firefox em Wayland
+    QT_QPA_PLATFORM "wayland"        // apps Qt em Wayland nativo
+                                    // NÃO usar "wayland;xcb": quebra o IPC do quickshell/noctalia
 }
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
@@ -299,8 +317,8 @@ window-rule {
     // This app-id regular expression will work for both:
     // - host Firefox (app-id is "firefox")
     // - Flatpak Firefox (app-id is "org.mozilla.firefox")
-    // match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    //open-floating true
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
 }
 
 // Example: block out two password managers from screen capture.
@@ -338,7 +356,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+T hotkey-overlay-title="Open a Terminal: foot" { spawn "foot"; }
+    Mod+T hotkey-overlay-title="Open a Terminal: foot" { spawn "footclient"; }
     // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
 
     // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
