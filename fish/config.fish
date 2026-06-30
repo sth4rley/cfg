@@ -11,4 +11,5 @@ fish_add_path ~/.local/bin
 
 set -x PYENV_ROOT $HOME/.pyenv
 set -x PATH $PYENV_ROOT/bin $PATH
+set -gx EDITOR nvim
 pyenv init - | source
