@@ -1,0 +1,32 @@
+# Configuração do yazi — https://yazi-rs.github.io/docs/configuration/yazi
+# Na versão 26.x a seção principal é [mgr] (antiga [manager]).
+
+[mgr]
+show_hidden     = true      # alterna em uso com a tecla "."
+sort_by         = "natural"  # ordenação natural: 2 vem antes de 10
+sort_dir_first  = true       # pastas primeiro
+sort_sensitive  = false      # ignora maiúsculas/minúsculas na ordenação
+sort_reverse    = false
+linemode        = "size"     # coluna à direita: size | mtime | permissions | none
+show_symlink    = true
+scrolloff       = 5          # margem ao rolar, como no vim
+title_format    = "Yazi: {cwd}"
+
+[preview]
+wrap         = "yes"
+tab_size     = 4
+max_width    = 1200
+max_height   = 1200
+image_filter = "lanczos3"
+image_quality = 90
+
+# Fetchers do plugin git (mostra status git ao lado dos arquivos).
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"
