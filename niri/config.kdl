@@ -108,7 +108,7 @@ hotkey-overlay{
 // Settings that influence how windows are positioned and sized.
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
-    gaps 3
+    gaps 0
 
     // Centraliza a coluna quando há apenas uma na tela.
     always-center-single-column
@@ -184,7 +184,7 @@ layout {
         // The settings are the same as for the focus ring.
         // If you enable the border, you probably want to disable the focus ring.
         //off
-        width 2
+        width 3
         active-color "#858585"
         inactive-color "#404040"
         urgent-color "#9b0000"
@@ -336,7 +336,7 @@ window-rule {
 // Example: enable rounded corners for all windows.
 // (This example rule is commented out with a "/-" in front.)
 window-rule {
-    geometry-corner-radius 4
+    geometry-corner-radius 0
     clip-to-geometry true
 }
 
