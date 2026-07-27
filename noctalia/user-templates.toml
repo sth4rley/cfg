@@ -1,0 +1,23 @@
+# Templates de usuário do Noctalia
+# Docs: https://docs.noctalia.dev/v4/theming/user-templates/
+#
+# Só são processados se "User templates" estiver ligado em
+# Settings -> Color Scheme -> Templates -> Advanced.
+#
+# Formato:
+#   [templates.<id>]
+#   input_path  = template com placeholders {{colors.*}}
+#   output_path = arquivo gerado (sobrescrito a cada troca de esquema)
+#   post_hook   = comando rodado depois (via shell), só se a saída mudou
+
+[templates.nvim-base16]
+input_path = "~/.config/noctalia/templates/neovim.lua"
+output_path = "~/.config/nvim/lua/noctalia.lua"
+post_hook = "pkill -SIGUSR1 -x nvim || true"
+
+# Atualiza em tempo real as janelas do foot já abertas (o template embutido do
+# Noctalia só reescreve o arquivo de tema; o foot não relê config em runtime).
+[templates.foot-live]
+input_path = "~/.config/noctalia/templates/foot-live.conf"
+output_path = "~/.cache/noctalia/foot-live.conf"
+post_hook = "bash ~/.config/noctalia/scripts/foot-apply-live.sh"

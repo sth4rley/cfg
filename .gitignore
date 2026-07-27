@@ -17,8 +17,9 @@ nvim/nvim.log
 # seu tema do fish já está fixado em fish/conf.d/fish_frozen_theme.fish.
 #fish/fish_variables
 
-# Plugins do Noctalia costumam guardar chave de API no settings.json deles
-noctalia/plugins/*/settings.json
+# Plugins do Noctalia
+noctalia/plugins/
+noctalia/colorschemes/
 
 # Lixo de sistema/editor
 .DS_Store
