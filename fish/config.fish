@@ -13,3 +13,7 @@ set -x PYENV_ROOT $HOME/.pyenv
 set -x PATH $PYENV_ROOT/bin $PATH
 set -gx EDITOR nvim
 pyenv init - | source
+
+
+# Added by Antigravity CLI installer
+set -gx PATH "/home/sth/.local/bin" $PATH
