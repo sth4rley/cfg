@@ -1,0 +1,26 @@
+# Arquivos gerados pelo Noctalia a cada troca de esquema de cores.
+# As FONTES ficam versionadas: noctalia/templates/, noctalia/scripts/ e
+# noctalia/user-templates.toml. Estes aqui são apenas a saída.
+foot/themes/noctalia
+noctalia/colors.json
+
+# Gerado a partir de noctalia/templates/neovim.lua
+nvim/lua/noctalia.lua
+
+# Estado volátil / logs
+nvim/.nvimlog
+nvim/nvim.log
+*.log
+
+# Estado do shell: histórico de $PATH universal e cores do fish.
+# Muda sozinho a cada sessão. Descomente se preferir não versionar --
+# seu tema do fish já está fixado em fish/conf.d/fish_frozen_theme.fish.
+#fish/fish_variables
+
+# Plugins do Noctalia costumam guardar chave de API no settings.json deles
+noctalia/plugins/*/settings.json
+
+# Lixo de sistema/editor
+.DS_Store
+*.swp
+*~
