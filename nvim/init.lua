@@ -629,16 +629,46 @@ require("lazy").setup({
 
 			-- Autopairs (mini.pairs)
 			require("mini.pairs").setup()
-
 			-- Simple and easy statusline.
-			local statusline = require("mini.statusline")
-			statusline.setup({ use_icons = vim.g.have_nerd_font }) -- use icons if you have a Nerd Font
-
-			-- set the section for cursor location to LINE:COLUMN
-			---@diagnostic disable-next-line: duplicate-set-field
-			statusline.section_location = function()
-				return "%2l:%-2v"
-			end
+			local MiniStatusline = require("mini.statusline")
+			MiniStatusline.setup({
+				use_icons = false,
+				content = {
+					active = function()
+						local mode_names = {
+							n = "NOR",
+							i = "INS",
+							v = "SEL",
+							V = "SEL",
+							["\22"] = "SEL",
+							c = "CMD",
+							R = "REP",
+							t = "TER",
+							s = "SEL",
+							S = "SEL",
+						}
+						local _, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+						local mode = mode_names[vim.fn.mode()] or vim.fn.mode():upper()
+						local git = MiniStatusline.section_git({ trunc_width = 40, icon = "" })
+						local diff = MiniStatusline.section_diff({ trunc_width = 75, icon = "" })
+						local diagnostics = MiniStatusline.section_diagnostics({ trunc_width = 75, icon = "" })
+						local search = MiniStatusline.section_searchcount({ trunc_width = 75 })
+						local filename = MiniStatusline.section_filename({ trunc_width = 140 })
+						local fileinfo = MiniStatusline.section_fileinfo({ trunc_width = 120 })
+						local location = "%2l:%-2v"
+						local percent = "%2p%%"
+						return MiniStatusline.combine_groups({
+							{ hl = mode_hl, strings = { mode } },
+							{ hl = "MiniStatuslineDevinfo", strings = { git, diff, diagnostics } },
+							"%<",
+							{ hl = "MiniStatuslineFilename", strings = { filename } },
+							"%=",
+							{ hl = "MiniStatuslineFileinfo", strings = { search, fileinfo } },
+							{ hl = mode_hl, strings = { location, percent } },
+						})
+					end,
+				},
+			})
 		end,
 	},
 
