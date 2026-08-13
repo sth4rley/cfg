@@ -47,7 +47,7 @@
         "capsuleColorKey": "none",
         "capsuleOpacity": 1,
         "contentPadding": 2,
-        "density": "mini",
+        "density": "compact",
         "displayMode": "always_visible",
         "enableExclusionZoneInset": true,
         "fontScale": 1,
@@ -197,6 +197,46 @@
                     "iconColor": "none",
                     "id": "Network",
                     "textColor": "none"
+                },
+                {
+                    "defaultSettings": {
+                        "attachmentStyle": "connected",
+                        "claude": {
+                            "additionalDirs": [
+                            ],
+                            "allowedTools": [
+                            ],
+                            "appendSystemPrompt": "",
+                            "autoResume": true,
+                            "binary": "claude",
+                            "dangerouslySkipPermissions": false,
+                            "disallowedTools": [
+                            ],
+                            "fallbackModel": "",
+                            "includePartialMessages": true,
+                            "injectNoctaliaContext": true,
+                            "maxTurns": 0,
+                            "mcpConfigPath": "",
+                            "model": "",
+                            "permissionMode": "default",
+                            "requireConfirmBypass": true,
+                            "sessionId": "",
+                            "strictMcpConfig": false,
+                            "workingDir": ""
+                        },
+                        "maxHistoryLength": 200,
+                        "panelDetached": true,
+                        "panelHeightRatio": 0.9,
+                        "panelPosition": "right",
+                        "panelWidth": 620,
+                        "scale": 1
+                    },
+                    "id": "plugin:claude-code-panel",
+                    "panel": {
+                        "defaultHeightRatio": 0.9,
+                        "defaultPosition": "right",
+                        "detached": true
+                    }
                 }
             ]
         }
@@ -230,9 +270,9 @@
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
         "monitorForColors": "",
-        "predefinedScheme": "Murata",
+        "predefinedScheme": "Zenbones",
         "schedulingMode": "off",
-        "syncGsettings": false,
+        "syncGsettings": true,
         "useWallpaperColors": false
     },
     "controlCenter": {
@@ -711,7 +751,7 @@
         "overviewBlur": 0.4,
         "overviewEnabled": false,
         "overviewTint": 0.6,
-        "panelPosition": "follow_bar",
+        "panelPosition": "center",
         "randomIntervalSec": 300,
         "setWallpaperOnAllMonitors": true,
         "showHiddenFiles": false,

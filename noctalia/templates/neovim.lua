@@ -13,38 +13,42 @@
 -- ATENCAO 1: nao escreva placeholders de exemplo nos comentarios — o renderizador
 -- valida TODO o arquivo e aborta se encontrar um nome de cor inexistente.
 --
--- ATENCAO 2: as chaves terminal_* (usadas nos slots de sintaxe) só existem em
--- esquemas PREDEFINIDOS. Se você ligar "use wallpaper colors", elas desaparecem,
--- o render falha e o arquivo gerado para de ser atualizado (o Neovim continua
--- funcionando com o último tema gerado). Nesse caso troque para os tokens Material:
--- error / tertiary / secondary / primary / tertiary_fixed_dim / primary_fixed_dim /
--- secondary_fixed_dim / error_container.
--- Referência: https://docs.noctalia.dev/v4/theming/user-templates/
+-- ATENCAO 2: este template usa SOMENTE tokens Material (surface, on_surface,
+-- primary, error, *_fixed_dim, *_container...). Eles existem em qualquer fonte de
+-- esquema (predefinido, wallpaper ou custom) e em ambos os modos dark/light.
+-- NÃO volte a usar as chaves terminal_* (terminal_background, terminal_normal_red,
+-- etc.): elas só existem em esquemas PREDEFINIDOS com bloco de terminal. Ao alternar
+-- para "use wallpaper colors" ou para um esquema/modo sem terminais, elas somem, o
+-- render falha e o arquivo gerado para de ser atualizado (o Neovim segue no último
+-- tema gerado). Foi exatamente esse o bug ao testar outros esquemas + dark/light.
+-- Referência: https://docs.noctalia.dev/v5/theming/palette/
 
 local M = {}
 
 function M.setup()
 	require("base16-colorscheme").setup({
 		-- Estrutura da UI: tokens Material (dão mais profundidade que as 16 ANSI).
-		base00 = "{{colors.terminal_background.default.hex}}", -- background (== surface)
+		base00 = "{{colors.surface.default.hex}}", -- background
 		base01 = "{{colors.surface_container.default.hex}}", -- background alternativo, CursorLine
-		base02 = "{{colors.terminal_selection_bg.default.hex}}", -- seleção (igual à do foot)
+		base02 = "{{colors.surface_container_high.default.hex}}", -- seleção
 		base03 = "{{colors.outline.default.hex}}", -- comentários, texto apagado
 		base04 = "{{colors.on_surface_variant.default.hex}}", -- foreground escuro
-		base05 = "{{colors.terminal_foreground.default.hex}}", -- foreground padrão (== on_surface)
+		base05 = "{{colors.on_surface.default.hex}}", -- foreground padrão
 		base06 = "{{colors.on_surface.default.hex}}", -- foreground claro
 		base07 = "{{colors.on_background.default.hex}}", -- foreground mais claro
-		-- Sintaxe: paleta ANSI literal do esquema, a MESMA que o foot recebe.
-		-- Derivar do Material aqui erra feio quando primary não é azul (ex.: Everforest,
-		-- em que o slot "azul" saía esverdeado).
-		base08 = "{{colors.terminal_normal_red.default.hex}}", -- vermelho
-		base09 = "{{colors.terminal_bright_red.default.hex}}", -- laranja
-		base0A = "{{colors.terminal_normal_yellow.default.hex}}", -- amarelo
-		base0B = "{{colors.terminal_normal_green.default.hex}}", -- verde
-		base0C = "{{colors.terminal_normal_cyan.default.hex}}", -- ciano
-		base0D = "{{colors.terminal_normal_blue.default.hex}}", -- azul
-		base0E = "{{colors.terminal_normal_magenta.default.hex}}", -- magenta
-		base0F = "{{colors.terminal_bright_magenta.default.hex}}", -- marrom/extra
+		-- Sintaxe: derivada dos acentos Material. Isso é robusto a qualquer esquema/modo,
+		-- mas cuidado: o "slot azul" (base0D) vem de primary_fixed_dim e nem sempre é azul
+		-- de fato (em esquemas cujo primary é verde/roxo, o hue pode escorregar). Se algum
+		-- esquema específico ficar estranho, reatribua o slot problemático à mão (ex.:
+		-- base0D = secondary, base0C = tertiary...).
+		base08 = "{{colors.error.default.hex}}", -- vermelho: variáveis, erros
+		base09 = "{{colors.tertiary.default.hex}}", -- laranja: inteiros, constantes
+		base0A = "{{colors.secondary.default.hex}}", -- amarelo: classes, fundo de busca
+		base0B = "{{colors.primary.default.hex}}", -- verde: strings, diff add
+		base0C = "{{colors.tertiary_fixed_dim.default.hex}}", -- ciano: regex, escapes
+		base0D = "{{colors.primary_fixed_dim.default.hex}}", -- azul: funções, métodos
+		base0E = "{{colors.secondary_fixed_dim.default.hex}}", -- magenta: keywords, storage
+		base0F = "{{colors.error_container.default.hex}}", -- marrom/extra: deprecated
 	})
 
 	-- O base16 deixa o Telescope bem cru; estes overrides usam os tokens Material
