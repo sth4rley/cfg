@@ -1,0 +1,108 @@
+# Noctalia v5 — migrado do antigo settings.json (v4).
+#
+# O v5 lê todo *.toml deste diretório (inclusive user-templates.toml) e depois
+# sobrepõe ~/.local/state/noctalia/settings.toml, que guarda o que for mudado
+# pela interface gráfica. Valide com: noctalia config validate
+# Referência de todas as chaves:      noctalia config export full
+#
+# NÃO migrados (sem equivalente direto no v5): plugins do v4 (claude-code-panel,
+# model-usage, timer, todo, calendar-widget, hot-corners, privacy-indicator,
+# niri-workspaces) e o formato do menu de sessão. O v5 já traz workspaces do niri
+# e hot corners embutidos.
+
+# --- Tema ---------------------------------------------------------------------
+# v4: predefinedScheme "Zenbones", darkMode true.
+[theme]
+source = "community"
+community_palette = "Zenbones"
+mode = "dark"
+
+# Quais templates escrevem tema em outros apps a cada troca de esquema.
+# v4 "gtk" virou gtk3 + gtk4; v4 "code" virou o template comunitário "vscode".
+# Deixei de fora "emacs" e "pywalfox" (estavam ativos no v4): os apps não estão
+# instalados e o hook de cada um falha a cada troca de tema. Reative se instalar.
+# ATENÇÃO: os templates próprios em user-templates.toml (nvim-base16, foot-live)
+# NÃO estão sendo aplicados pelo v5 — o validador chama [templates.*] de "unknown
+# section" e nada é gerado.
+[theme.templates]
+builtin_ids = [ "niri", "foot", "gtk3", "gtk4", "qt", "btop" ]
+community_ids = [ "yazi", "vscode" ]
+
+# --- Fonte, clipboard ---------------------------------------------------------
+[shell]
+font_family = "JetBrainsMono Nerd Font"   # v4 ui.fontDefault "JetBrainsMono NF"
+clipboard_enabled = false                 # v4 appLauncher.enableClipboardHistory = false
+
+# --- Wallpaper ----------------------------------------------------------------
+[wallpaper]
+directory = "/home/sth/Pictures/Wallpapers"
+fill_mode = "crop"
+
+# --- Barra --------------------------------------------------------------------
+# v4: barra "simple" no topo, com cápsulas, sem cantos externos; à esquerda só
+# Workspace, no centro Clock, à direita sysmon compacto + tray + notificações +
+# volume + control center + bateria + rede.
+[bar.default]
+position = "top"
+capsule = true
+concave_edge_corners = false
+start = [ "workspaces" ]
+center = [ "datetime" ]
+end = [
+    "cpu",
+    "temp",
+    "ram",
+    "tray",
+    "notifications",
+    "volume",
+    "control-center",
+    "battery",
+    "network"
+]
+
+# v4 Clock: "HH:mm ddd, MMM dd"
+[widget.datetime]
+type = "clock"
+format = "{:%H:%M %a, %b %d}"
+
+# v4 SysMonitor: memória em porcentagem
+[widget.ram]
+type = "sysmon"
+stat = "ram_pct"
+
+# --- OSD e notificações -------------------------------------------------------
+# v4 osd.enabledTypes = [0, 1, 2]: volume de saída, volume de entrada e brilho.
+[osd]
+position = "top_right"
+
+    [osd.kinds]
+    volume = true
+    volume_input = true
+    volume_output = true
+    brightness = true
+    bluetooth = false
+    caffeine = false
+    dnd = false
+    keyboard_backlight = false
+    keyboard_layout = false
+    lock_keys = false
+    media = false
+    nightlight = false
+    power_profile = false
+    privacy = false
+    wifi = false
+
+[notification]
+position = "top_right"
+background_opacity = 1.0
+
+# --- Luz noturna e local ------------------------------------------------------
+# v4 nightLight: enabled, autoSchedule, dayTemp 5718, nightTemp 5218
+[nightlight]
+enabled = true
+temperature_day = 5718
+temperature_night = 5218
+
+[location]
+address = "brazil"
+auto_locate = false
