@@ -2,11 +2,9 @@
 
 input {
     keyboard {
+        // Vazio de propósito: o niri usa o layout do sistema (localectl), que é
+        // diferente em cada máquina. Quem configura é o install.sh (tabela KEYBOARD).
         xkb {
-            // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
-	    //layout "us"
-            //variant "intl"
-            // file "~/.config/keymap.xkb"
         }
         numlock
     }
