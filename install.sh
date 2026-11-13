@@ -31,7 +31,7 @@ DRY=0
 #   lv3:switch = Ctrl direito funciona como AltGr (o Aula F75 não tem AltGr).
 declare -A KEYBOARD=(
     [b550]="us|pc105|intl|lv3:switch"   # desktop, Aula F75 (americano)
-    [thinkpad]="br|abnt2||"             # notebook, ThinkPad T14 Gen 2 (ABNT2)
+    [thinkpad]="br,us|abnt2|,intl|lv3:switch"  # notebook, ThinkPad T14 Gen 2 (ABNT2) + Aula F75 externo (Mod+Space alterna)
 )
 
 # Arquivos do repositório que não são config.
