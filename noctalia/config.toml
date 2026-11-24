@@ -49,6 +49,7 @@ concave_edge_corners = false
 start = [ "workspaces" ]
 center = [ "datetime" ]
 end = [
+    "ai_usage",
     "cpu",
     "temp",
     "ram",
@@ -65,10 +66,20 @@ end = [
 type = "clock"
 format = "{:%H:%M %a, %b %d}"
 
+# Uso dos LLMs (substitui o plugin model-usage do v4). Os números vêm do CLI
+# ai-usagebar (github.com/akitaonrails/ai-usagebar), que precisa estar no PATH;
+# ele lê o login do Claude Code em ~/.claude/.credentials.json.
+[widget.ai_usage]
+type = "felipeartur/ai-usagebar:bar"
+
 # v4 SysMonitor: memória em porcentagem
 [widget.ram]
 type = "sysmon"
 stat = "ram_pct"
+
+# --- Plugins ------------------------------------------------------------------
+[plugins]
+enabled = [ "felipeartur/ai-usagebar" ]
 
 # --- OSD e notificações -------------------------------------------------------
 # v4 osd.enabledTypes = [0, 1, 2]: volume de saída, volume de entrada e brilho.

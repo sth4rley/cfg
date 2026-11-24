@@ -1,0 +1,5 @@
+# ThinkPad T14 Gen 2 (20W1) com teclado ABNT2: a tecla /? (ao lado do PrtSc)
+# envia o scancode do Ctrl direito (e0 1d). Remapeia para KEY_RO (/? do ABNT2).
+# Só afeta o teclado interno (atkbd); teclados USB externos não são afetados.
+evdev:atkbd:dmi:bvn*:bvr*:bd*:svnLENOVO*:pn20W1*:*
+ KEYBOARD_KEY_9d=ro

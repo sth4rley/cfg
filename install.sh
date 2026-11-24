@@ -6,6 +6,7 @@
 #
 # Mapeamento:
 #   noctalia-state/*  -> ~/.local/state/noctalia/*   (ajustes feitos pela GUI do Noctalia v5)
+#   system/*          -> /*  (arquivos de sistema, instalados com sudo)
 #   todo o resto      -> ~/.config/<mesmo caminho>
 #
 # Também configura o layout de teclado da máquina (via localectl), conforme a
@@ -29,6 +30,10 @@ DRY=0
 # Layout de teclado por máquina (hostname).
 # Formato: "layout|modelo|variante|opções" (campo vazio = sem valor).
 #   lv3:switch = Ctrl direito funciona como AltGr (o Aula F75 não tem AltGr).
+#   A tecla /? do T14 ABNT2 envia o código do Ctrl direito; quem a corrige é a
+#   regra system/etc/udev/hwdb.d/90-thinkpad-t14-abnt2.hwdb (só no teclado
+#   interno), por isso não dá para usar a variante br(thinkpad) junto com
+#   lv3:switch.
 declare -A KEYBOARD=(
     [b550]="us|pc105|intl|lv3:switch"   # desktop, Aula F75 (americano)
     [thinkpad]="br,us|abnt2|,intl|lv3:switch"  # notebook, ThinkPad T14 Gen 2 (ABNT2) + Aula F75 externo (Mod+Space alterna)
@@ -49,6 +54,9 @@ while IFS= read -r rel; do
 
     src="$REPO/$rel"
     case "$rel" in
+        system/*)
+            continue   # instalados na seção "Arquivos de sistema" abaixo
+            ;;
         noctalia-state/*)
             dst="$STATE/noctalia/${rel#noctalia-state/}"
             if (( NOCTALIA_RUNNING )); then
@@ -100,6 +108,38 @@ if (( skipped_state )); then
     echo
     echo "O estado do Noctalia não foi instalado porque ele está rodando. Rode:"
     echo "  pkill -x noctalia && ./install.sh && noctalia --daemon"
+fi
+
+# --- Arquivos de sistema (system/* -> /*) -------------------------------------
+echo
+sys_changed=0 hwdb_changed=0
+while IFS= read -r rel; do
+    src="$REPO/$rel"
+    dst="/${rel#system/}"
+    [[ -f "$dst" ]] && cmp -s "$src" "$dst" && continue
+    sys_changed=$((sys_changed + 1))
+    [[ "$dst" == /etc/udev/hwdb.d/* ]] && hwdb_changed=1
+    if (( DRY )); then
+        [[ -e "$dst" ]] && echo "ALTERAR $dst (sudo)" || echo "CRIAR   $dst (sudo)"
+        continue
+    fi
+    if [[ -e "$dst" ]]; then
+        bak="$BACKUP/system$dst"
+        mkdir -p "$(dirname "$bak")"
+        sudo cp -a "$dst" "$bak"
+        echo "ALTERAR $dst"
+    else
+        echo "CRIAR   $dst"
+    fi
+    sudo install -D -m 644 "$src" "$dst"
+done < <(git -C "$REPO" ls-files system/)
+
+if (( sys_changed == 0 )); then
+    echo "Sistema: arquivos já iguais."
+elif (( hwdb_changed && ! DRY )); then
+    echo "Sistema: recarregando regras de teclado (hwdb)..."
+    sudo systemd-hwdb update
+    sudo udevadm trigger --subsystem-match=input --action=change
 fi
 
 # --- Layout de teclado --------------------------------------------------------

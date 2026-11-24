@@ -251,6 +251,9 @@ spawn-at-startup "noctalia" "--daemon"
 spawn-at-startup "/usr/libexec/kf6/polkit-kde-authentication-agent-1"
 spawn-at-startup "handy" "--start-hidden"
 
+// Notificação ao trocar o layout de teclado (Mod+Space).
+spawn-sh-at-startup "~/.config/niri/scripts/layout-notify.sh"
+
 // Modo servidor do foot: um processo compartilhado; cada janela nova é um
 // `footclient` (abertura quase instantânea, memória compartilhada).
 spawn-at-startup "foot" "--server"
