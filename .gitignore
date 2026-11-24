@@ -2,10 +2,14 @@
 # As FONTES ficam versionadas: noctalia/templates/, noctalia/scripts/ e
 # noctalia/user-templates.toml. Estes aqui são apenas a saída.
 foot/themes/noctalia
+niri/noctalia.kdl
+# Sobra do Noctalia v4 (o v5 não atualiza mais).
 noctalia/colors.json
 
-# Gerado a partir de noctalia/templates/neovim.lua
-nvim/lua/noctalia.lua
+# nvim/lua/noctalia.lua FICA versionado de propósito: deveria ser gerado a
+# partir de noctalia/templates/neovim.lua, mas o Noctalia v5 não aplica os
+# templates de user-templates.toml (veja noctalia/config.toml), então o repo
+# é a única fonte dele por enquanto.
 
 # Gerado pelo install.sh com `herdr completion fish`
 fish/completions/herdr.fish

@@ -606,4 +606,7 @@ binds {
     Mod+Shift+P { power-off-monitors; }
 }
 
-include "./noctalia.kdl"
+// Cores das bordas geradas pelo Noctalia (template "niri") a cada troca de
+// esquema. Não é versionado; optional para não quebrar a config numa máquina
+// nova antes de o Noctalia gerar o arquivo.
+include optional=true "./noctalia.kdl"
