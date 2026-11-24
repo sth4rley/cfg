@@ -12,6 +12,10 @@
 # Também configura o layout de teclado da máquina (via localectl), conforme a
 # tabela KEYBOARD abaixo. O niri lê esse layout do sistema.
 #
+# Se o herdr estiver instalado, recria o que ele gera e por isso não é
+# versionado: as completions do fish (herdr completion fish) e a integração
+# com o Claude Code (herdr integration install claude).
+#
 # Só copia arquivos versionados (git ls-files). Arquivos que já existem e são
 # diferentes vão para um backup em ~/.config-backup/<data>/ antes de serem
 # sobrescritos. Arquivos que existem só no sistema (temas gerados etc.) não são
@@ -158,5 +162,44 @@ else
     else
         echo "Teclado: configurando para '$host' ($kb_layout $kb_variant), pode pedir a senha do sudo..."
         sudo localectl set-x11-keymap "$kb_layout" "$kb_model" "$kb_variant" "$kb_options"
+    fi
+fi
+
+# --- herdr: arquivos gerados --------------------------------------------------
+# Não ficam no repositório porque o próprio herdr os gera; são recriados aqui.
+echo
+if ! command -v herdr >/dev/null 2>&1; then
+    echo "herdr: não instalado; completions e integração com o Claude puladas."
+else
+    comp="$CONFIG/fish/completions/herdr.fish"
+    tmp="$(mktemp)"
+    herdr completion fish > "$tmp"
+    if [[ -f "$comp" ]] && cmp -s "$tmp" "$comp"; then
+        echo "herdr: completions do fish já iguais."
+    elif (( DRY )); then
+        [[ -e "$comp" ]] && echo "ALTERAR $comp (herdr completion fish)" \
+                         || echo "CRIAR   $comp (herdr completion fish)"
+    else
+        [[ -e "$comp" ]] && echo "ALTERAR $comp" || echo "CRIAR   $comp"
+        mkdir -p "$(dirname "$comp")"
+        cp "$tmp" "$comp"
+    fi
+    rm -f "$tmp"
+
+    # Rodar o install de novo é seguro (não duplica hooks no settings.json), mas
+    # consultar o status evita regravar o hook à toa e deixa o dry-run dizer o
+    # que faria. O install falha se ~/.claude não existir (Claude Code nunca
+    # rodou), por isso isso é checado antes.
+    claude_status="$(herdr integration status 2>/dev/null | sed -n 's/^claude: //p')"
+    claude_status="${claude_status%% (/*}"   # tira o caminho: "current (v11)"
+    if [[ "$claude_status" == current* ]]; then
+        echo "herdr: integração com o Claude já instalada ($claude_status)."
+    elif [[ ! -d "$HOME/.claude" ]]; then
+        echo "herdr: ~/.claude não existe; abra o Claude Code uma vez e rode ./install.sh de novo."
+    elif (( DRY )); then
+        echo "herdr: rodaria: herdr integration install claude (status: ${claude_status:-desconhecido})"
+    else
+        echo "herdr: instalando integração com o Claude (status: ${claude_status:-desconhecido})..."
+        herdr integration install claude
     fi
 fi

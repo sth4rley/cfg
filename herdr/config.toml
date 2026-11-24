@@ -1,0 +1,14 @@
+onboarding = false
+
+[ui.toast]
+delivery = "herdr"
+
+[ui.sound]
+enabled = true
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[keys]
+remove_worktree = "prefix+shift+y"  
