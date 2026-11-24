@@ -7,7 +7,13 @@
 # Mapeamento:
 #   noctalia-state/*  -> ~/.local/state/noctalia/*   (ajustes feitos pela GUI do Noctalia v5)
 #   system/*          -> /*  (arquivos de sistema, instalados com sudo)
+#   claude/*          -> ~/.claude/*   (Claude Code)
 #   todo o resto      -> ~/.config/<mesmo caminho>
+#
+# O claude/settings.json é exceção: tem só as preferências escritas à mão e é
+# MESCLADO no ~/.claude/settings.json (com jq), não copiado por cima. Assim
+# ficam preservados os hooks que outras ferramentas instalam nele (herdr) e as
+# chaves que o próprio Claude Code grava. Nas chaves versionadas, vale o repo.
 #
 # Também configura o layout de teclado da máquina (via localectl), conforme a
 # tabela KEYBOARD abaixo. O niri lê esse layout do sistema.
@@ -26,6 +32,7 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
+CLAUDE_DIR="$HOME/.claude"
 BACKUP="$HOME/.config-backup/$(date +%Y%m%d-%H%M%S)"
 
 DRY=0
@@ -60,6 +67,12 @@ while IFS= read -r rel; do
     case "$rel" in
         system/*)
             continue   # instalados na seção "Arquivos de sistema" abaixo
+            ;;
+        claude/settings.json)
+            continue   # mesclado na seção "Claude Code" abaixo
+            ;;
+        claude/*)
+            dst="$CLAUDE_DIR/${rel#claude/}"
             ;;
         noctalia-state/*)
             dst="$STATE/noctalia/${rel#noctalia-state/}"
@@ -165,6 +178,45 @@ else
     fi
 fi
 
+# --- Claude Code: preferências (claude/settings.json -> ~/.claude/settings.json)
+# Mescla em vez de copiar; veja o comentário no topo.
+echo
+cl_src="$REPO/claude/settings.json"
+cl_dst="$CLAUDE_DIR/settings.json"
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Claude: jq não instalado; preferências não aplicadas."
+else
+    tmp="$(mktemp)"
+    if [[ -f "$cl_dst" ]]; then
+        jq -s '.[0] * .[1]' "$cl_dst" "$cl_src" > "$tmp"
+    else
+        jq . "$cl_src" > "$tmp"
+    fi
+    if [[ -f "$cl_dst" ]] && jq -e -n --slurpfile a "$cl_dst" --slurpfile b "$tmp" '$a == $b' >/dev/null; then
+        echo "Claude: preferências já aplicadas em $cl_dst."
+    elif (( DRY )); then
+        if [[ -f "$cl_dst" ]]; then
+            echo "ALTERAR $cl_dst (mescla das preferências; chaves que mudariam:)"
+            jq -r -n --slurpfile a "$cl_dst" --slurpfile b "$tmp" \
+                '$b[0] | keys[] as $k | select($a[0][$k] != .[$k]) | "          \($k)"'
+        else
+            echo "CRIAR   $cl_dst"
+        fi
+    else
+        if [[ -f "$cl_dst" ]]; then
+            bak="$BACKUP/${cl_dst#"$HOME"/}"
+            mkdir -p "$(dirname "$bak")"
+            cp -a "$cl_dst" "$bak"
+            echo "ALTERAR $cl_dst (preferências mescladas)"
+        else
+            echo "CRIAR   $cl_dst"
+        fi
+        mkdir -p "$(dirname "$cl_dst")"
+        cat "$tmp" > "$cl_dst"
+    fi
+    rm -f "$tmp"
+fi
+
 # --- herdr: arquivos gerados --------------------------------------------------
 # Não ficam no repositório porque o próprio herdr os gera; são recriados aqui.
 echo
@@ -188,16 +240,16 @@ else
 
     # Rodar o install de novo é seguro (não duplica hooks no settings.json), mas
     # consultar o status evita regravar o hook à toa e deixa o dry-run dizer o
-    # que faria. O install falha se ~/.claude não existir (Claude Code nunca
-    # rodou), por isso isso é checado antes.
+    # que faria. O install falha se ~/.claude não existir; na prática ele já foi
+    # criado acima (statusline e preferências), mas a checagem fica por segurança.
     claude_status="$(herdr integration status 2>/dev/null | sed -n 's/^claude: //p')"
     claude_status="${claude_status%% (/*}"   # tira o caminho: "current (v11)"
     if [[ "$claude_status" == current* ]]; then
         echo "herdr: integração com o Claude já instalada ($claude_status)."
-    elif [[ ! -d "$HOME/.claude" ]]; then
-        echo "herdr: ~/.claude não existe; abra o Claude Code uma vez e rode ./install.sh de novo."
     elif (( DRY )); then
         echo "herdr: rodaria: herdr integration install claude (status: ${claude_status:-desconhecido})"
+    elif [[ ! -d "$CLAUDE_DIR" ]]; then
+        echo "herdr: ~/.claude não existe; abra o Claude Code uma vez e rode ./install.sh de novo."
     else
         echo "herdr: instalando integração com o Claude (status: ${claude_status:-desconhecido})..."
         herdr integration install claude
